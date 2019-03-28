@@ -34,7 +34,7 @@ $(document).ready(function() {
 				contentDiv.html('<h1>View Sub-accounts</h1><p id="subaccounts-loading">Please wait, loading your subaccounts...</p><ul id="subaccounts-list-top" style="display: none;"></ul>');
 				
 				//Get this user's subaccounts list
-				$.getJSON('https://canvas.ox.ac.uk/api/v1/accounts.json?per_page=100', function(subaccounts) {
+				$.getJSON('/api/v1/accounts.json?per_page=100', function(subaccounts) {
 					//Sort the list by number
 					//TODO: This is based on the assumption that subaccounts are numbered from the top (i.e. root = 1, child = 2, grandchild = 3, etc)
 					//This is not necessarily the case, as subaccounts that have been moved could disrupt this order
@@ -77,8 +77,8 @@ function createSubaccountListItem(saId, ancestorId, name, subaccountId) {
 	}
 	
 	//li id = subaccount-:ancestorId-:saId
-	//Account URL = https://canvas.ox.ac.uk/accounts/:saId
-	return '<li id="subaccount-' + ancestorId + '-' + saId + '"' + style +'><a href="https://canvas.ox.ac.uk/accounts/' + saId + '">' + name + '</a>'  + subaccountId + '</li>'; 
+	//Account URL = /accounts/:saId
+	return '<li id="subaccount-' + ancestorId + '-' + saId + '"' + style +'><a href="/accounts/' + saId + '">' + name + '</a>'  + subaccountId + '</li>'; 
 }
 
 //Recursively get the children of a subaccount
@@ -86,7 +86,7 @@ function iterateChildren(parentId, ancestorId) {
 	subaccountCallsMade++;	//We're about to make another API call
 	
 	//Get all the subaccounts of this account
-	$.getJSON('https://canvas.ox.ac.uk/api/v1/accounts/' + parentId + '/sub_accounts.json?per_page=1000', function(children) {
+	$.getJSON('/api/v1/accounts/' + parentId + '/sub_accounts.json?per_page=1000', function(children) {
 		//Only do something if there are any children
 		if(children.length > 0) {
 			//Created new list and append to the parent list item
