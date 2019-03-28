@@ -46,7 +46,9 @@ $(document).ready(function() {
 					subaccounts.forEach(function(sa) {
 						subaccountsInAdminList.push(sa.id);	//Add to adminlist array
 						subaccountsFound[sa.id] = [];	//Create array for this ancestor in subaccountsFound
-						var content = createSubaccountListItem(sa.id, sa.id, sa.name);	//Create the list item
+						var subaccountId = processSubaccountValue(sa.sis_account_id);
+						
+						var content = createSubaccountListItem(sa.id, sa.id, sa.name, subaccountId);	//Create the list item
 						$('ul#subaccounts-list-top', contentDiv).append(content);	//Append the list item to the subaccounts list
 						
 						iterateChildren(sa.id, sa.id);	//Iterate over the children of this subaccount
@@ -57,8 +59,17 @@ $(document).ready(function() {
 	}
 });
 
+function processSubaccountValue(subaccountValue) {
+	var subaccountId = "";
+	if(typeof(subaccountValue) !== "undefined" && subaccountValue !== null) {
+		subaccountId = ' - ' + subaccountValue;
+	}
+	
+	return subaccountId;
+}
+
 //Create a list item for a subaccount
-function createSubaccountListItem(saId, ancestorId, name) {
+function createSubaccountListItem(saId, ancestorId, name, subaccountId) {
 	//If this is an top level ancestor, i.e. saId == ancestorId, add margin above to separate these on the page
 	var style='';
 	if(saId == ancestorId) {
@@ -67,7 +78,7 @@ function createSubaccountListItem(saId, ancestorId, name) {
 	
 	//li id = subaccount-:ancestorId-:saId
 	//Account URL = https://canvas.ox.ac.uk/accounts/:saId
-	return '<li id="subaccount-' + ancestorId + '-' + saId + '"' + style +'><a href="https://canvas.ox.ac.uk/accounts/' + saId + '">' + name + '</a></li>'; 
+	return '<li id="subaccount-' + ancestorId + '-' + saId + '"' + style +'><a href="https://canvas.ox.ac.uk/accounts/' + saId + '">' + name + '</a>'  + subaccountId + '</li>'; 
 }
 
 //Recursively get the children of a subaccount
@@ -86,9 +97,10 @@ function iterateChildren(parentId, ancestorId) {
 			children.forEach(function(sa) {
 				//Add to subaccounts found for this ancestor
 				subaccountsFound[ancestorId].push(sa.id);
-				
+				var subaccountId = processSubaccountValue(sa.sis_account_id);
+
 				//Create and append list item for this subaccount
-				var content = createSubaccountListItem(sa.id, ancestorId, sa.name);
+				var content = createSubaccountListItem(sa.id, ancestorId, sa.name, subaccountId);
 				$('ul#subaccounts-list-' + ancestorId + '-' + parentId, contentDiv).append(content);
 				
 				//Iterate over this subaccount's children
