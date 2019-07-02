@@ -11,7 +11,7 @@ $(document).ready(function() {
 	
 	//TODO: Is this a robust way of identifying when we are in a subaccount?
 	//If we are on an account page...
-	if(urlSplit[3] = 'accounts') {
+	if(urlSplit[3] === 'accounts') {
 		var menuTabs = $('ul#section-tabs');	//Get the menu list
 
 		//If there is at least one item in the menu (there always should be)...
